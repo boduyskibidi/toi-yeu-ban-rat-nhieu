@@ -83,19 +83,10 @@ margin-bottom:15px;
 
 <body>
 
+<!-- LOAD SEARCH MAP -->
+<script src="./map.js"></script>
+
 <script>
-
-// =======================
-// SEARCH MAP
-// =======================
-
-const SEARCH_MAP = {
-
-    "247-2": "linkcuaban.com",
-
-    "212-3": "abc.com"
-
-};
 
 // =======================
 // CREATE POPUP
@@ -201,7 +192,7 @@ function updatePopup(data){
 async function startSearch(code){
 
     const domain =
-        SEARCH_MAP[code];
+        window.SEARCH_MAP[code];
 
     if(!domain){
 
