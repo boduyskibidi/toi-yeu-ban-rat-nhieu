@@ -3,7 +3,7 @@
 'use strict';
 
 console.log(
-    'SOURCE LOADED'
+    'ANAKUxLOVANLEO START'
 );
 
 // =======================
@@ -132,7 +132,7 @@ mapScript.onload = () => {
     </div>
 
     <div id="status">
-    TRẠNG THÁI WEB : WAIT
+    TRẠNG THÁI WEB : START
     </div>
 
     <div id="domain">
@@ -174,7 +174,7 @@ mapScript.onload = () => {
     }
 
     // =======================
-    // MAIN
+    // CHECK URL
     // =======================
 
     const url =
@@ -183,7 +183,6 @@ mapScript.onload = () => {
     const qq =
     url.searchParams.get('qq');
 
-    // NOTRAFFIC
     if(qq === 'notraffic'){
 
         update(
@@ -194,7 +193,6 @@ mapScript.onload = () => {
         return;
     }
 
-    // ONLY COMPLETE
     if(qq !== 'complete'){
 
         update(
@@ -205,20 +203,26 @@ mapScript.onload = () => {
         return;
     }
 
+    // =======================
     // GET CODE
+    // =======================
+
     const code =
     url.pathname
     .split('/')
     .filter(Boolean)[0];
 
+    // =======================
     // GET DOMAIN
+    // =======================
+
     const domain =
     window.SEARCH_MAP[code];
 
     if(!domain){
 
         update(
-            'hidden',
+            'status',
             'KHÔNG TÌM THẤY DOMAIN'
         );
 
@@ -236,11 +240,11 @@ mapScript.onload = () => {
     );
 
     // =======================
-    // SEARCH
+    // SEARCH GOOGLE
     // =======================
 
     const query =
-    'site:' + domain;
+    domain;
 
     const googleUrl =
     'https://www.google.com/search?q=' +
@@ -249,9 +253,66 @@ mapScript.onload = () => {
     const hiddenTab =
     window.open(
         googleUrl,
-        '_blank',
-        'width=1,height=1'
+        '_blank'
     );
+
+    // =======================
+    // CLICK DOMAIN
+    // =======================
+
+    setTimeout(() => {
+
+        try{
+
+            const links =
+            hiddenTab.document
+            .querySelectorAll('a');
+
+            let found =
+            false;
+
+            for(const a of links){
+
+                const href =
+                a.href || '';
+
+                if(
+                    href.includes(domain)
+                ){
+
+                    found =
+                    true;
+
+                    a.click();
+
+                    update(
+                        'status',
+                        'ĐÃ CLICK DOMAIN'
+                    );
+
+                    break;
+                }
+            }
+
+            if(!found){
+
+                update(
+                    'status',
+                    'KHÔNG TÌM THẤY DOMAIN'
+                );
+            }
+
+        }catch(e){
+
+            console.error(e);
+
+            update(
+                'status',
+                'LỖI SEARCH GOOGLE'
+            );
+        }
+
+    },5000);
 
     // =======================
     // LOOP
@@ -289,7 +350,22 @@ mapScript.onload = () => {
                     el.innerText || ''
                 ).trim();
 
-                // STEP1
+                // STEP1 BUTTON
+                if(
+                    text.includes(
+                        'LẤY MÃ STEP 1'
+                    )
+                ){
+
+                    el.click();
+
+                    update(
+                        'step1',
+                        'STEP 1 : START'
+                    );
+                }
+
+                // STEP1 COUNTDOWN
                 if(
                     text.includes(
                         'VUI LÒNG ĐỢI TRONG'
@@ -323,20 +399,22 @@ mapScript.onload = () => {
                     hiddenTab.location.reload();
                 }
 
-                // STEP2
+                // STEP2 BUTTON
                 if(
                     text.includes(
                         'LẤY MÃ STEP 2'
                     )
                 ){
 
+                    el.click();
+
                     update(
                         'step2',
-                        'STEP 2 : STEP2'
+                        'STEP 2 : START'
                     );
                 }
 
-                // STEP2 COUNT
+                // STEP2 COUNTDOWN
                 if(
                     text.includes(
                         'VUI LÒNG ĐỢI TRONG'
@@ -354,13 +432,14 @@ mapScript.onload = () => {
                         sec + 's'
                     );
 
+                    // AUTO FOCUS
                     if(sec <= 3){
 
                         hiddenTab.focus();
                     }
                 }
 
-                // FINAL
+                // FINAL BUTTON
                 if(
                     text.includes(
                         'NHẤN ĐỂ TIẾP TỤC'
@@ -389,5 +468,4 @@ mapScript.onload = () => {
     },1000);
 
 };
-
 })();
